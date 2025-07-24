@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rauchfrei</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary-blue: #007aff;
+        --primary-green: #34c759;
+        --primary-orange: #ff9500;
+        --primary-red: #ff3b30;
+        --secondary-blue: #5ac8fa;
+        --background-primary: #000000;
+        --background-secondary: #1c1c1e;
+        --background-tertiary: #2c2c2e;
+        --label-primary: #ffffff;
+        --label-secondary: #ebebf5;
+        --label-tertiary: #ebebf599;
+        --separator: #38383a;
+        --card-background: rgba(28, 28, 30, 0.68);
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+          "Segoe UI", Roboto, sans-serif;
+        background: var(--background-primary);
+        min-height: 100vh;
+        color: var(--label-primary);
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      .background-pattern {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(
+            circle at 20% 50%,
+            rgba(0, 122, 255, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(52, 199, 89, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 40% 80%,
+            rgba(255, 149, 0, 0.05) 0%,
+            transparent 50%
+          );
+        z-index: -1;
+      }
+
+      .container {
+        padding: 20px;
+        max-width: 428px;
+        margin: 0 auto;
+      }
+
+      .header {
+        text-align: center;
+        margin: 60px 0 40px 0;
+      }
+
+      .app-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-green),
+          var(--secondary-blue)
+        );
+        border-radius: 18px;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        box-shadow: 0 8px 25px rgba(52, 199, 89, 0.3);
+      }
+
+      .app-title {
+        font-size: 34px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        margin-bottom: 8px;
+        background: linear-gradient(
+          135deg,
+          var(--label-primary),
+          var(--label-secondary)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .app-subtitle {
+        font-size: 17px;
+        color: var(--label-tertiary);
+        font-weight: 400;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+
+      .stat-card {
+        background: var(--card-background);
+        backdrop-filter: blur(40px);
+        border-radius: 16px;
+        padding: 24px;
+        border: 1px solid var(--separator);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-green),
+          var(--primary-blue)
+        );
+      }
+
+      /* New combined stats styles */
+      .main-stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      .main-stat {
+        flex: 1;
+        min-width: 120px;
+      }
+
+      .main-stat-label {
+        font-size: 15px;
+        color: var(--label-tertiary);
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .main-stat-icon {
+        font-size: 16px;
+      }
+
+      .main-stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 1;
+        background: linear-gradient(
+          135deg,
+          var(--label-primary),
+          var(--label-secondary)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .divider {
+        width: 1px;
+        height: 40px;
+        background: var(--separator);
+        margin: 0 16px;
+      }
+
+      .stat-description {
+        font-size: 15px;
+        color: var(--label-tertiary);
+        font-weight: 400;
+        text-align: center;
+        margin-bottom: 16px;
+      }
+
+      .health-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .health-stat {
+        background: var(--background-tertiary);
+        border-radius: 12px;
+        padding: 16px;
+        text-align: center;
+      }
+
+      .health-stat-number {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--primary-green);
+      }
+
+      .health-stat-label {
+        font-size: 13px;
+        color: var(--label-tertiary);
+        margin-top: 4px;
+      }
+
+      .milestones-section {
+        background: var(--card-background);
+        backdrop-filter: blur(40px);
+        border-radius: 16px;
+        border: 1px solid var(--separator);
+        overflow: hidden;
+        margin-bottom: 40px;
+      }
+
+      .section-header {
+        padding: 20px 20px 12px;
+        border-bottom: 1px solid var(--separator);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .section-icon {
+        font-size: 24px;
+      }
+
+      .section-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--label-primary);
+      }
+
+      .milestone-list {
+        padding: 8px 0;
+      }
+
+      .milestone {
+        display: flex;
+        align-items: center;
+        padding: 16px 20px;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .milestone::after {
+        content: "";
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        bottom: 0;
+        height: 0.5px;
+        background: var(--separator);
+      }
+
+      .milestone:last-child::after {
+        display: none;
+      }
+
+      .milestone-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+        font-size: 20px;
+        transition: all 0.3s ease;
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      .milestone.achieved .milestone-icon {
+        background: var(--primary-green);
+        transform: scale(1.05);
+      }
+
+      .milestone.achieved .milestone-icon::after {
+        content: "✓";
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        background: var(--primary-green);
+        border: 2px solid var(--background-primary);
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: bold;
+      }
+
+      .milestone:not(.achieved) .milestone-icon {
+        background: var(--background-tertiary);
+        color: var(--label-tertiary);
+      }
+
+      .milestone-content {
+        flex: 1;
+      }
+
+      .milestone-title {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--label-primary);
+        margin-bottom: 2px;
+      }
+
+      .milestone:not(.achieved) .milestone-title {
+        color: var(--label-tertiary);
+      }
+
+      .milestone-details {
+        font-size: 15px;
+        color: var(--label-tertiary);
+        margin-bottom: 8px;
+      }
+
+      /* Progress bar styles */
+      .milestone-progress-container {
+        width: 100%;
+        height: 6px;
+        background: var(--background-tertiary);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-top: 8px;
+      }
+
+      .milestone-progress-bar {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--primary-blue),
+          var(--secondary-blue)
+        );
+        border-radius: 3px;
+        transition: width 0.3s ease;
+        width: 0%;
+      }
+
+      .milestone.achieved .milestone-progress-bar {
+        background: var(--primary-green);
+        width: 100% !important;
+      }
+
+      .milestone-progress-text {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--primary-blue);
+        margin-top: 4px;
+      }
+
+      .milestone.achieved .milestone-progress-text {
+        color: var(--primary-green);
+      }
+
+      .celebration {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--card-background);
+        backdrop-filter: blur(40px);
+        border: 1px solid var(--separator);
+        border-radius: 20px;
+        padding: 32px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        max-width: 300px;
+        width: 90%;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.4s ease;
+      }
+
+      .celebration.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .celebration-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+
+      .celebration-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--label-primary);
+        margin-bottom: 8px;
+      }
+
+      .celebration-text {
+        font-size: 15px;
+        color: var(--label-secondary);
+        line-height: 1.4;
+      }
+
+      @media (max-width: 428px) {
+        .container {
+          padding: 16px;
+        }
+
+        .header {
+          margin: 40px 0 32px 0;
+        }
+
+        .main-stat-value {
+          font-size: 28px;
+        }
+
+        .app-title {
+          font-size: 28px;
+        }
+
+        .divider {
+          display: none;
+        }
+
+        .main-stats {
+          gap: 24px;
+        }
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root {
+          --background-primary: #ffffff;
+          --background-secondary: #f2f2f7;
+          --background-tertiary: #ffffff;
+          --label-primary: #000000;
+          --label-secondary: #3c3c43;
+          --label-tertiary: #3c3c4399;
+          --separator: #c6c6c8;
+          --card-background: rgba(255, 255, 255, 0.8);
+        }
+
+        .health-stat {
+          background: var(--background-secondary);
+        }
+
+        .milestone-progress-container {
+          background: var(--background-secondary);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="background-pattern"></div>
+
+    <div class="container">
+      <div class="header">
+        <div class="app-icon">🚭</div>
+        <h1 class="app-title">Rauchfrei</h1>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="main-stats">
+            <div class="main-stat">
+              <div class="main-stat-label">
+                <span class="main-stat-icon">📅</span>
+                Rauchfreie Tage
+              </div>
+              <div class="main-stat-value" id="days">0</div>
+            </div>
+            <div class="divider"></div>
+            <div class="main-stat">
+              <div class="main-stat-label">
+                <span class="main-stat-icon">💰</span>
+                Gespartes Geld
+              </div>
+              <div class="main-stat-value" id="money">0€</div>
+            </div>
+          </div>
+          <div class="stat-description">
+            Seit dem 20. Juli 2025 • 5€ pro Tag
+          </div>
+          <div class="health-stats">
+            <div class="health-stat">
+              <div class="health-stat-number" id="cigarettes">0</div>
+              <div class="health-stat-label">Zigaretten vermieden</div>
+            </div>
+            <div class="health-stat">
+              <div class="health-stat-number" id="health-hours">0h</div>
+              <div class="health-stat-label">Leben gewonnen</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="milestones-section">
+        <div class="section-header">
+          <span class="section-icon">🏆</span>
+          <h2 class="section-title">Rewards</h2>
+        </div>
+
+        <div class="milestone-list">
+          <div class="milestone" data-cost="30">
+            <div class="milestone-icon">🍽️</div>
+            <div class="milestone-content">
+              <div class="milestone-title">Abends essen gehen</div>
+              <div class="milestone-details">30€ • Nach 6 Tagen</div>
+              <div class="milestone-progress-container">
+                <div class="milestone-progress-bar"></div>
+              </div>
+              <div class="milestone-progress-text"></div>
+            </div>
+          </div>
+
+          <div class="milestone" data-cost="250">
+            <div class="milestone-icon">🇳🇱</div>
+            <div class="milestone-content">
+              <div class="milestone-title">Wochenende in den Niederlanden</div>
+              <div class="milestone-details">250€ • Nach 50 Tagen</div>
+              <div class="milestone-progress-container">
+                <div class="milestone-progress-bar"></div>
+              </div>
+              <div class="milestone-progress-text"></div>
+            </div>
+          </div>
+
+          <div class="milestone" data-cost="1000">
+            <div class="milestone-icon">🏖️</div>
+            <div class="milestone-content">
+              <div class="milestone-title">Zweiwöchiger Sommerurlaub</div>
+              <div class="milestone-details">1000€ • Nach 200 Tagen</div>
+              <div class="milestone-progress-container">
+                <div class="milestone-progress-bar"></div>
+              </div>
+              <div class="milestone-progress-text"></div>
+            </div>
+          </div>
+
+          <div class="milestone" data-cost="2500">
+            <div class="milestone-icon">🇨🇦</div>
+            <div class="milestone-content">
+              <div class="milestone-title">Kanada-Reise</div>
+              <div class="milestone-details">2500€ • Nach 500 Tagen</div>
+              <div class="milestone-progress-container">
+                <div class="milestone-progress-bar"></div>
+              </div>
+              <div class="milestone-progress-text"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="celebration" class="celebration">
+      <div class="celebration-icon">🎉</div>
+      <div class="celebration-title">Glückwunsch!</div>
+      <div class="celebration-text">
+        Du hast dir eine neue Belohnung verdient!
+      </div>
+    </div>
+
+    <script>
+      function updateTracker() {
+        const quitDate = new Date("2025-07-20");
+        const today = new Date();
+        const diffTime = Math.abs(today - quitDate);
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+        // Berechnungen
+        const moneySaved = diffDays * 5;
+        const cigarettesAvoided = diffDays * 20; // Angenommen 20 Zigaretten pro Tag
+        const lifeGainedHours = Math.floor(cigarettesAvoided * 0.19); // ~11 Minuten pro Zigarette
+
+        // Display aktualisieren
+        document.getElementById("days").textContent = diffDays;
+        document.getElementById("money").textContent = moneySaved + "€";
+        document.getElementById("cigarettes").textContent = cigarettesAvoided;
+        document.getElementById("health-hours").textContent =
+          lifeGainedHours + "h";
+
+        // Meilensteine aktualisieren
+        const milestones = document.querySelectorAll(".milestone");
+        let newAchievement = false;
+        let latestAchievement = "";
+
+        milestones.forEach((milestone) => {
+          const cost = parseInt(milestone.dataset.cost);
+          const wasAchieved = milestone.classList.contains("achieved");
+          const title = milestone.querySelector(".milestone-title").textContent;
+          const progressBar = milestone.querySelector(
+            ".milestone-progress-bar"
+          );
+          const progressText = milestone.querySelector(
+            ".milestone-progress-text"
+          );
+
+          if (moneySaved >= cost) {
+            milestone.classList.add("achieved");
+            progressBar.style.width = "100%";
+            progressText.textContent = "Erreicht! ✓";
+
+            if (!wasAchieved && diffDays > 0) {
+              newAchievement = true;
+              latestAchievement = title;
+            }
+          } else {
+            milestone.classList.remove("achieved");
+            // Fortschritt berechnen und anzeigen
+            const progress = Math.min((moneySaved / cost) * 100, 100);
+            progressBar.style.width = progress + "%";
+
+            const remaining = cost - moneySaved;
+            const daysRemaining = Math.ceil(remaining / 5);
+            progressText.textContent = `${progress.toFixed(
+              0
+            )}% • Noch ${remaining}€ (${daysRemaining} Tage)`;
+          }
+        });
+
+        // Feier anzeigen bei neuer Errungenschaft
+        if (newAchievement) {
+          const celebration = document.getElementById("celebration");
+          celebration.querySelector(
+            ".celebration-text"
+          ).textContent = `Du hast dir "${latestAchievement}" verdient!`;
+          celebration.classList.add("show");
+
+          setTimeout(() => {
+            celebration.classList.remove("show");
+          }, 4000);
+        }
+      }
+
+      // Sofort aktualisieren und dann jede Stunde
+      updateTracker();
+      setInterval(updateTracker, 3600000);
+
+      // Animation beim Laden
+      document.addEventListener("DOMContentLoaded", () => {
+        const cards = document.querySelectorAll(
+          ".stat-card, .milestones-section"
+        );
+        cards.forEach((card, index) => {
+          card.style.opacity = "0";
+          card.style.transform = "translateY(20px)";
+          setTimeout(() => {
+            card.style.transition = "all 0.6s ease";
+            card.style.opacity = "1";
+            card.style.transform = "translateY(0)";
+          }, index * 100);
+        });
+      });
+    </script>
+  </body>
+</html>
